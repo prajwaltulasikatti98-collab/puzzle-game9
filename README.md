@@ -1,1 +1,143 @@
 # puzzle-game9
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle Game</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 10px;
+  justify-content: center;
+}
+
+.tile {
+  width: 100px;
+  height: 100px;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px solid white;
+}
+
+.tile:hover {
+  background: rgba(255,255,255,0.4);
+  transform: scale(1.05);
+}
+
+.empty {
+  background: transparent;
+  border: 2px dashed white;
+  cursor: default;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: white;
+  color: black;
+  transform: scale(1.1);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Sliding Puzzle</h1>
+  <div class="grid" id="grid"></div>
+  <button onclick="shuffle()">Shuffle</button>
+</div>
+
+<script>
+let tiles = [1,2,3,4,5,6,7,8,""];
+
+function render() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  tiles.forEach((tile, index) => {
+    const div = document.createElement("div");
+    div.className = "tile";
+
+    if (tile === "") {
+      div.classList.add("empty");
+    } else {
+      div.innerText = tile;
+      div.onclick = () => move(index);
+    }
+
+    grid.appendChild(div);
+  });
+}
+
+function move(index) {
+  const emptyIndex = tiles.indexOf("");
+
+  const validMoves = [
+    emptyIndex - 1,
+    emptyIndex + 1,
+    emptyIndex - 3,
+    emptyIndex + 3
+  ];
+
+  if (validMoves.includes(index)) {
+    [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+    render();
+    checkWin();
+  }
+}
+
+function shuffle() {
+  for (let i = tiles.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
+  render();
+}
+
+function checkWin() {
+  const win = [1,2,3,4,5,6,7,8,""];
+  if (JSON.stringify(tiles) === JSON.stringify(win)) {
+    setTimeout(() => alert("🎉 You Win!"), 100);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
